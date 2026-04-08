@@ -1,24 +1,28 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #f5f5f7;
-  --card: #1c1c1e;
-  --card-border: #2c2c2e;
-  --accent: #d4a843;
-  --accent-dim: #b8922e;
-  --muted: #8e8e93;
-  --input-bg: #1c1c1e;
-  --input-border: #3a3a3c;
+  --background: #09090b;
+  --foreground: #fafafa;
+  --surface: #111113;
+  --card: #18181b;
+  --card-border: #27272a;
+  --gold: #d4a843;
+  --gold-light: #e8c46a;
+  --gold-dim: #a07830;
+  --muted: #71717a;
+  --input-bg: #18181b;
+  --input-border: #333338;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
   --color-card: var(--card);
   --color-card-border: var(--card-border);
-  --color-accent: var(--accent);
-  --color-accent-dim: var(--accent-dim);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dim: var(--gold-dim);
   --color-muted: var(--muted);
   --color-input-bg: var(--input-bg);
   --color-input-border: var(--input-border);
@@ -31,17 +35,101 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 select,
-input {
+input,
+button {
   font-family: inherit;
 }
 
 ::selection {
-  background: var(--accent);
+  background: var(--gold);
   color: var(--background);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 3px;
+}
+
+/* ---- keyframes ---- */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ---- utility classes ---- */
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.45s ease-out both;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 168, 67, 0.06) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dim));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ---- print ---- */
+
+@media print {
+  nav,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+  * {
+    border-color: #e5e5e5 !important;
+    color: inherit !important;
+    -webkit-text-fill-color: unset !important;
+  }
+  .gold-gradient-text {
+    background: none !important;
+    -webkit-text-fill-color: #111 !important;
+  }
+  section {
+    break-inside: avoid;
+  }
 }

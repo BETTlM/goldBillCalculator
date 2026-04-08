@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     if (type) {
       const { data, error } = await supabase
         .from("jewellery_items")
-        .select("id, name, type")
+        .select("id, name, type, weight")
         .eq("type", type);
 
       if (error) {

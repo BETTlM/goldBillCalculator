@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Titan Gold — Jewellery Price Calculator",
-  description: "Calculate gold jewellery prices with live gold rates",
+  description: "Calculate gold jewellery prices with live 24K gold rates",
 };
 
 export default function RootLayout({
