@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Titan Gold
 
-## Getting Started
+A jewellery price calculator built with Next.js. It fetches live 24K gold rates from goldapi.io and computes item-level pricing using weight, wastage, making charges, and GST stored in a Supabase database.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Live 24K gold rate (INR per gram) via goldapi.io with an 8-hour cache to stay within free-tier API limits
+- Jewellery item catalog stored in Supabase (rings, chains, bracelets, earrings, necklaces, bangles)
+- Price breakdown: gold value, wastage, making charge, GST, and total
+- Fallback to a static rate when the API is unavailable or unconfigured
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Database**: Supabase (PostgreSQL)
+- **Styling**: Tailwind CSS 4
+- **Language**: TypeScript
+- **Gold Rate**: goldapi.io (free tier, 100 requests/month)
+
+## Prerequisites
+
+- Node.js 18+
+- A Supabase project with the `jewellery_items` table created
+- A goldapi.io API key (free at https://www.goldapi.io)
+
+## Setup
+
+1. **Install dependencies**
+
+   ```
+   npm install
+   ```
+
+2. **Configure environment variables**
+
+   Create a `.env` file in the project root:
+
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your-supabase-key
+   GOLDAPI_KEY=your-goldapi-io-key
+   ```
+
+3. **Seed the database**
+
+   Run the setup script with your Supabase database password:
+
+   ```
+   node setup-db.mjs <your-database-password>
+   ```
+
+   This creates the `jewellery_items` table and inserts 30 sample items across 6 categories.
+
+4. **Start the dev server**
+
+   ```
+   npm run dev
+   ```
+
+   Open http://localhost:3000 in your browser.
+
+## API Routes
+
+### `GET /api/gold-rate`
+
+Returns the current 24K gold rate in INR per gram. The rate is fetched from goldapi.io and cached in memory for 8 hours. If the API is unreachable or the key is missing, a static fallback rate is returned.
+
+**Response**
+
+```json
+{
+  "ratePerGram": 9245.50,
+  "currency": "INR",
+  "unit": "gram",
+  "source": "live",
+  "timestamp": "2026-04-08T10:30:00.000Z"
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### `GET /api/jewellery`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Query jewellery items from Supabase.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Parameter | Description                          |
+|-----------|--------------------------------------|
+| `type`    | Filter items by type (e.g. `ring`)   |
+| `id`      | Fetch a single item by ID            |
 
-## Learn More
+**Examples**
 
-To learn more about Next.js, take a look at the following resources:
+```
+GET /api/jewellery?type=ring      — list all rings
+GET /api/jewellery?id=3           — get item with id 3
+GET /api/jewellery                — list all distinct types
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+  app/
+    api/
+      gold-rate/route.ts   — gold rate endpoint with caching
+      jewellery/route.ts   — jewellery CRUD endpoint
+    page.tsx               — main calculator UI
+    layout.tsx             — root layout
+    globals.css            — global styles
+  lib/
+    supabase.ts            — Supabase client
+setup-db.mjs               — database seed script
+supabase-setup.sql          — raw SQL for manual setup
+```
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Private.
