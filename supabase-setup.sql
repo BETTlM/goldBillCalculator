@@ -1,5 +1,4 @@
--- Run this in your Supabase Dashboard → SQL Editor → New Query
--- It creates the table and seeds it with 30 jewellery items (5 per type)
+-- Sample AI Generated SQL for Jewellery Store Setup (Supabase)
 
 CREATE TABLE IF NOT EXISTS jewellery_items (
   id             SERIAL PRIMARY KEY,
